@@ -50,14 +50,11 @@ A aplicação foi otimizada para compilação e exportação em formato Android.
     *   No Unity, abra a cena **`SalaExameScene`** e selecione o GameObject chamado **`Servicoia`** na hierarquia da cena.
     *   No painel do *Inspector*, localize o script **`ServicoGemini`**.
     *   Cole a sua chave gerada (que normalmente inicia com `AIzaSy...`) no campo **`Chave API`**.
-5.  **Geração do APK:**
-    *   Volte a **File > Build Settings...** e clique no botão **Build**.
-    *   Escolha um diretório para salvar o ficheiro executável Android (ex: `SereneFlowXR.apk`).
-6.  **Instalação nos Óculos (via USB-C):**
-    *   Ligue os óculos de Realidade Virtual ao PC através de um cabo USB-C.
-    *   Utilize uma ferramenta como o **SideQuest** ou a linha de comandos do Android Debug Bridge (`adb install -r SereneFlowXR.apk`) para transferir e instalar o executável APK diretamente no dispositivo.
-    *   No menu interno dos óculos, a aplicação estará disponível na secção **Fontes Desconhecidas (Unknown Sources)**.
-
+   
+5.  **Compilação e Execução (Build and Run):**
+    *   Ligue os óculos de Realidade Virtual ao PC através do cabo USB-C.
+    *   Volte a **File > Build Settings...** e clique no botão **Build And Run**.
+    *   O Unity irá compilar o projeto, transferir o ficheiro diretamente para os óculos e iniciar a aplicação de forma automática no dispositivo.
 ---
 
 ## 3. Arquitetura de Software e Lógica C#
