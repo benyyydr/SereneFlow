@@ -288,9 +288,9 @@ MonoBehaviour:
   volumeBaixo: 0.03
   velocidadeFade: 2
   falasParaOuvir:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1888034524}
+  - {fileID: 528701985}
+  - {fileID: 2095163550}
   gravadorDoPaciente: {fileID: 0}
 --- !u!82 &954246658
 AudioSource:

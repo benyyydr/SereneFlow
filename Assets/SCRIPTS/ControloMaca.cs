@@ -85,9 +85,37 @@ public class ControloMaca : MonoBehaviour
             esferaLuz.SetActive(false);
         }
 
-        // Se não houver áudio inicial, permite a interação imediata
         if (vozQueDestranca == null) podeIniciar = true;
         else if (componenteVR != null) componenteVR.enabled = false;
+
+        // Regista automaticamente todos os áudios e o microfone desta cena na Música Clínica persistente
+        if (MusicaClinica.Instancia != null)
+        {
+            // Limpa as referências de AudioSources destruídos da cena anterior (Sala de Espera)
+            MusicaClinica.Instancia.LimparReferenciasNulas();
+
+            System.Collections.Generic.List<AudioSource> sonsDaCena = new System.Collections.Generic.List<AudioSource>();
+
+            if (vozEntrada != null) sonsDaCena.Add(vozEntrada);
+            if (vozPerguntaPronto != null) sonsDaCena.Add(vozPerguntaPronto);
+            if (vozSaida != null) sonsDaCena.Add(vozSaida);
+            if (fonteVozRobo != null) sonsDaCena.Add(fonteVozRobo);
+
+            // Adiciona a coluna de voz da IA se estiver configurada
+            if (gestorDeVoz != null && gestorDeVoz.servicoIA != null && gestorDeVoz.servicoIA.colunaDoRobo != null)
+            {
+                sonsDaCena.Add(gestorDeVoz.servicoIA.colunaDoRobo);
+            }
+
+            // Adiciona de forma cumulativa sem sobrescrever o que o AtrasarVoz já possa ter registado
+            MusicaClinica.Instancia.AdicionarFalas(sonsDaCena.ToArray());
+
+            // Regista o microfone/gravador do paciente
+            if (gestorDeVoz != null)
+            {
+                MusicaClinica.Instancia.RegistarSonsDaScene(MusicaClinica.Instancia.falasParaOuvir, gestorDeVoz);
+            }
+        }
     }
 
     // Monitorização a cada frame (destranque da maca)
@@ -424,6 +452,7 @@ public class ControloMaca : MonoBehaviour
             ecraEscuro.color = Color.Lerp(corInicial, corFinal, tempo / tempoFade);
             yield return null;
         }
+        corFinal.a = alvoAlpha;
         ecraEscuro.color = corFinal;
     }
 

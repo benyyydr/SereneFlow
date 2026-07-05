@@ -10,35 +10,25 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(AudioSource))]
 public class MusicaClinica : MonoBehaviour
 {
-    // Instância única estática (padrão de desenho Singleton) para acesso global
     public static MusicaClinica Instancia { get; private set; }
 
     [Header("Volumes")]
-    [Tooltip("Volume padrão da música clínica quando ninguém está a falar.")]
     public float volumeNormal = 0.1f;
-    
-    [Tooltip("Volume reduzido (ducking) para quando o robô fala ou o paciente grava voz.")]
     public float volumeBaixo  = 0.03f;
-    
-    [Tooltip("Velocidade da transição de esvanecimento de volume (fade).")]
     public float velocidadeFade = 2f;
 
     [Header("Falas a Ouvir (Sala de Espera)")]
-    [Tooltip("Arrasta aqui as falas que existem NESTA scene. Atualiza este array manualmente quando entrares na SalaExameScene, arrastando as falas de lá.")]
+    [Tooltip("Arrasta aqui as falas que existem NESTA scene. Atualiza este array " +
+             "manualmente quando entrares na SalaExameScene, arrastando as falas de lá.")]
     public AudioSource[] falasParaOuvir;
 
     [Header("Microfone do Paciente (Sala de Exames)")]
-    [Tooltip("Referência ao gravador de voz para saber quando diminuir a música.")]
     public GravadorVoz gravadorDoPaciente;
 
     private AudioSource musica;
 
-    /// <summary>
-    /// Configuração do Singleton na inicialização.
-    /// </summary>
     void Awake()
     {
-        // Se já existir uma instância ativa deste script no cenário, destrói-se para evitar duplicados
         if (Instancia != null && Instancia != this)
         {
             Destroy(gameObject);
@@ -47,14 +37,9 @@ public class MusicaClinica : MonoBehaviour
 
         Instancia = this;
         musica = GetComponent<AudioSource>();
-        
-        // Garante que o objeto de som não seja destruído ao mudar de cena (sala de espera para sala de exame)
         DontDestroyOnLoad(gameObject);
     }
 
-    /// <summary>
-    /// Inicia a reprodução da música de fundo em loop.
-    /// </summary>
     void Start()
     {
         musica.volume = volumeNormal;
@@ -62,14 +47,10 @@ public class MusicaClinica : MonoBehaviour
         musica.Play();
     }
 
-    /// <summary>
-    /// Atualização a cada frame. Diminui o volume da música se houver vozes ativas ou gravação em curso.
-    /// </summary>
     void Update()
     {
         bool algumSomAtivo = false;
 
-        // Verifica se alguma fala na cena está a ser reproduzida
         if (falasParaOuvir != null)
         {
             foreach (AudioSource som in falasParaOuvir)
@@ -82,15 +63,62 @@ public class MusicaClinica : MonoBehaviour
             }
         }
 
-        // Verifica se o paciente está ativamente a gravar voz (para não haver ruído de fundo na IA)
         if (gravadorDoPaciente != null && gravadorDoPaciente.aGravar)
             algumSomAtivo = true;
 
-        // Escolhe o volume alvo com base na presença de vozes
         float volumeAlvo = algumSomAtivo ? volumeBaixo : volumeNormal;
-        
-        // Transição suave de volume (Fade/Lerp) ao longo do tempo
         musica.volume = Mathf.Lerp(musica.volume, volumeAlvo, Time.deltaTime * velocidadeFade);
+    }
+
+    /// <summary>
+    /// Limpa referências a AudioSources destruídos de cenas anteriores.
+    /// </summary>
+    public void LimparReferenciasNulas()
+    {
+        System.Collections.Generic.List<AudioSource> lista = new System.Collections.Generic.List<AudioSource>();
+        if (falasParaOuvir != null)
+        {
+            foreach (AudioSource f in falasParaOuvir)
+            {
+                if (f != null) lista.Add(f);
+            }
+        }
+        falasParaOuvir = lista.ToArray();
+    }
+
+    /// <summary>
+    /// Adiciona dinamicamente um AudioSource à lista de monitorização sem apagar as outras referências ativas.
+    /// </summary>
+    public void AdicionarFala(AudioSource novaFala)
+    {
+        if (novaFala == null) return;
+
+        System.Collections.Generic.List<AudioSource> lista = new System.Collections.Generic.List<AudioSource>();
+        if (falasParaOuvir != null)
+        {
+            foreach (AudioSource f in falasParaOuvir)
+            {
+                if (f != null) lista.Add(f);
+            }
+        }
+
+        if (!lista.Contains(novaFala))
+        {
+            lista.Add(novaFala);
+        }
+        falasParaOuvir = lista.ToArray();
+    }
+
+    /// <summary>
+    /// Adiciona dinamicamente um conjunto de AudioSources à lista de monitorização.
+    /// </summary>
+    public void AdicionarFalas(AudioSource[] novasFalas)
+    {
+        if (novasFalas == null) return;
+        foreach (AudioSource f in novasFalas)
+        {
+            AdicionarFala(f);
+        }
     }
 
     /// <summary>

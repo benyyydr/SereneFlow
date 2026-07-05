@@ -37,6 +37,12 @@ public class AtrasarVoz : MonoBehaviour
     /// </summary>
     void Start()
     {
+        // Regista dinamicamente esta fala na música clínica para que o volume baixe automaticamente ao começar a falar
+        if (MusicaClinica.Instancia != null && vozDoRobo != null)
+        {
+            MusicaClinica.Instancia.AdicionarFala(vozDoRobo);
+        }
+
         if (dispararNoStart)
             IniciarAtraso();
     }

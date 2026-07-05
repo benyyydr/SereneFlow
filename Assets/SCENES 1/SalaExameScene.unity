@@ -1886,7 +1886,7 @@ PrefabInstance:
       objectReference: {fileID: 251596289}
     - target: {fileID: 5282657473237103249, guid: e5671dbb935303b488271754752c180f, type: 3}
       propertyPath: volumeIntro
-      value: 0.09
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 5282657473237103249, guid: e5671dbb935303b488271754752c180f, type: 3}
       propertyPath: painelDaFala
@@ -2211,6 +2211,10 @@ PrefabInstance:
     - target: {fileID: 7390967908983131820, guid: e5671dbb935303b488271754752c180f, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7557929621634219573, guid: e5671dbb935303b488271754752c180f, type: 3}
+      propertyPath: chaveAPI
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7557929621634219573, guid: e5671dbb935303b488271754752c180f, type: 3}
       propertyPath: bancoDeFalas
